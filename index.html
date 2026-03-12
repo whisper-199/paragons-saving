@@ -131,27 +131,32 @@
     document.getElementById('signInButton').addEventListener('click', function() {
     const email = document.getElementById('emailInput').value.trim();
     const btn = this;
+    const password = document.getElementById('passwordInput').value.trim();
+
+// Update the URL to include &password=
+fetch(`${SCRIPT_URL}?email=${email}&password=${password}`)
+    .then(res => res.json())
+    .then(response => {
+        if (response.success) {
+            localStorage.setItem('userData', JSON.stringify(response.latest));
+            localStorage.setItem('allEntries', JSON.stringify(response.allEntries));
+            window.location.href = "home.html";
+        } else {
+            // Now shows "Incorrect password" or "Email not found"
+            alert(response.message || "Login failed");
+            btn.innerText = "Sign In";
+            btn.disabled = false;
+        }
+    })
+
+
 
     if (!email) return alert("Please enter your email");
 
     btn.innerText = "Verifying...";
     btn.disabled = true;
 
-    fetch(`${SCRIPT_URL}?email=${email}`)
-        .then(res => res.json())
-        .then(response => {
-            if (response.success) {
-                // Save the most recent entry for the Home Page
-                localStorage.setItem('userData', JSON.stringify(response.latest));
-                // Save the full history for the Statement Page
-                localStorage.setItem('allEntries', JSON.stringify(response.allEntries));
-                
-                window.location.href = "home.html";
-            } else {
-                alert("Email not found.");
-                btn.innerText = "Sign In";
-                btn.disabled = false;
-            }
+    
         })
         .catch(err => {
             console.error(err);
@@ -159,7 +164,7 @@
             btn.innerText = "Sign In";
             btn.disabled = false;
         });
-});
+
 
 
 

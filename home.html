@@ -173,6 +173,13 @@
                 <div class="info-value">Feb 2026</div>
             </div>
         </div>
+        <div id="passwordModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.9); z-index:2000; padding:20px; box-sizing:border-box;">
+    <h2 style="color:white;">Change Password</h2>
+    <input type="password" id="newPassInput" placeholder="Enter new password" style="width:100%; padding:15px; margin-bottom:10px; border-radius:8px; border:none;">
+    <button onclick="updatePassword()" style="width: 100%; padding: 15px; background: #FFD700; color: black; border: none; border-radius: 12px; font-weight: bold;">Save New Password</button>
+    <button onclick="document.getElementById('passwordModal').style.display='none'" style="width: 100%; padding: 10px; background: none; color: white; border: none; margin-top:10px;">Cancel</button>
+</div>
+
 
     </div>
 
@@ -262,6 +269,31 @@ function logOut() {
         localStorage.clear(); // Deletes BRIAN's or FRED's data from the phone
         window.location.href = "index.html"; // Returns to the login screen
     }
+}
+
+function updatePassword() {
+    const newPassword = document.getElementById('newPassInput').value;
+    const userData = JSON.parse(localStorage.getItem('userData'));
+
+    if (!newPassword) return alert("Please enter a password");
+
+    fetch(SCRIPT_URL, {
+        method: 'POST',
+        body: JSON.stringify({
+            email: userData.EMAIL || userData.Email, // Matches your sheet header
+            newPassword: newPassword
+        })
+    })
+    .then(res => res.json())
+    .then(response => {
+        if (response.success) {
+            alert("Password updated successfully!");
+            document.getElementById('passwordModal').style.display = 'none';
+        } else {
+            alert("Error: " + response.message);
+        }
+    })
+    .catch(err => console.error("Update failed:", err));
 }
 
 
