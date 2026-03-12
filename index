@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SecureBank - Login</title>
+    <style>
+        /* CSS to match image_0.png */
+        body {
+            background-color: #121212; /* Very dark background */
+            color: white;
+            font-family: Arial, sans-serif;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .login-container {
+            width: 85%;
+            max-width: 400px;
+            text-align: center;
+        }
+
+        /* Top Wrench Icon (Positioned Absolute) */
+        .wrench-icon {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background-color: #6C63FF; /* Purple from your screenshot */
+            border-radius: 50%;
+            padding: 10px;
+            width: 24px;
+            height: 24px;
+        }
+
+        /* Central Yellow Bank Icon */
+        .bank-logo {
+            margin-top: 50px;
+            font-size: 60px; /* Big bank emoji for placeholder */
+            color: #FFD700; /* Gold/Yellow */
+            margin-bottom: 30px;
+        }
+
+        h1 { font-size: 28px; margin-bottom: 5px; }
+        .welcome-text { font-size: 16px; color: #888; margin-bottom: 20px; }
+
+        /* DEMO MODE tag */
+        .demo-tag {
+            border: 1px solid #FFD700;
+            color: #FFD700;
+            border-radius: 20px;
+            padding: 8px 20px;
+            display: inline-block;
+            margin-bottom: 40px;
+            font-size: 14px;
+        }
+
+        /* Inputs and Labels */
+        .input-group {
+            text-align: left;
+            margin-bottom: 25px;
+        }
+
+        label { color: #888; margin-bottom: 10px; display: block; }
+
+        input {
+            width: 100%;
+            padding: 18px;
+            background-color: #1E1E1E; /* Slightly lighter dark */
+            border: none;
+            border-radius: 12px;
+            color: white;
+            font-size: 16px;
+            box-sizing: border-box; /* Crucial for padding */
+        }
+
+        ::placeholder { color: #555; }
+
+        /* Sign In Button */
+        .signin-btn {
+            width: 100%;
+            padding: 18px;
+            background-color: #FFD700; /* Main Yellow */
+            color: black;
+            font-weight: bold;
+            font-size: 18px;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: opacity 0.2s;
+        }
+
+        .signin-btn:hover { opacity: 0.8; }
+
+        /* Bottom Signup Link */
+        .signup-text { margin-top: 30px; color: #888; }
+        .signup-link { color: #FFD700; text-decoration: none; font-weight: bold; }
+
+    </style>
+</head>
+<body>
+
+    <div class="login-container">
+        <div class="wrench-icon">🔧</div>
+
+        <div class="bank-logo">🏛️</div>
+
+        <h1>SecureBank</h1>
+        <div class="welcome-text">Welcome back</div>
+
+        <div class="demo-tag">ⓘ DEMO MODE</div>
+
+        <div class="input-group">
+            <label for="emailInput">Email</label>
+            <input type="email" id="emailInput" placeholder="you@example.com" required>
+        </div>
+
+        <div class="input-group">
+            <label for="passwordInput">Password</label>
+            <input type="password" id="passwordInput" placeholder="Enter password" required>
+        </div>
+
+        <button class="signin-btn" id="signInButton">Sign In</button>
+
+        <div class="signup-text">Don't have an account? <a href="#" class="signup-link">Sign Up</a></div>
+    </div>
+
+    <script>
+        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwwcb1l8PVBeDkJYa51OX4geRgor4WneQYCFaOrGH5U77hfYDuxkM1IfRyp48xmdMFM/exec ";
+
+document.getElementById('signInButton').addEventListener('click', function() {
+    const email = document.getElementById('emailInput').value;
+    const btn = this;
+
+    if (!email) return alert("Enter your email");
+
+    btn.innerText = "Verifying...";
+    btn.disabled = true;
+
+    fetch(`${SCRIPT_URL}?email=${email}`)
+        .then(res => res.json())
+        .then(response => {
+            if (response.success) {
+                // Save user data to LocalStorage to use on the next page
+                localStorage.setItem('userData', JSON.stringify(response.data));
+                window.location.href = "home.html";
+            } else {
+                alert("Email not found in our records.");
+                btn.innerText = "Sign In";
+                btn.disabled = false;
+            }
+        })
+        .catch(err => {
+            console.error(err);
+            alert("Error connecting to server.");
+            btn.innerText = "Sign In";
+            btn.disabled = false;
+        });
+});
+
+    </script>
+
+</body>
+</html>
