@@ -18,6 +18,16 @@
             padding: 20px;
         }
 
+        .top-div{display: flex;
+    background: rgba(250, 250, 250, 0.6); /* Dark background */
+    backdrop-filter: blur(10px); /* Blurs content behind the bar */
+    padding: 10px 20px;
+    border-radius: 50px; /* Makes it a pill shape */
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    width: 70%;
+    align-items: center;}
+
         /* Header section with top right wrench icon */
         header {
             display: flex;
@@ -121,7 +131,7 @@
 
 .pill-nav {
     display: flex;
-    background: rgba(25, 25, 25, 0.6); /* Dark background */
+    background: rgba(250, 250, 250, 0.6); /* Dark background */
     backdrop-filter: blur(10px); /* Blurs content behind the bar */
     padding: 10px 20px;
     border-radius: 50px; /* Makes it a pill shape */
@@ -184,13 +194,13 @@
 
     <div class="container">
         <header>
-            <div class="header-text">
+            <div class="header-text top-div">
                 <div class="welcome-tag">Welcome back,</div>
                 <h1 class="user-name">Fredfred</h1>
             </div>
-          <div id="passwordModal">
+          <div id="passwordModal">👤
     <div class="modal-content">
-        <button onclick="updatePassword()">Save Password</button>
+        <button onclick="updatePassword()">SAVE</button>
         <button onclick="closePasswordModal()" style="color: red; background: none; border: none; margin-top: 10px; cursor: pointer;">Cancel</button>
     </div>
 </div>
@@ -286,7 +296,7 @@ if (!localStorage.getItem('userData')) {
     } else {
         // Updates based on your specific Sheet headers
         document.querySelector('.user-name').innerText = latestData.Name || "User";
-        document.querySelector('.balance-amount').innerText = "$" + (latestData.Balance || "0.00");
+        document.querySelector('.balance-amount').innerText = "ugx" + (latestData.Balance || "0.00");
         
         // Use bracket notation for headers with spaces
         document.querySelector('.account-num').innerText = latestData["Account Number"] || "N/A";
