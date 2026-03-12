@@ -154,7 +154,7 @@
             </div>
             <div class="info-row">
                 <div class="info-label">Member Since</div>
-                <div class="info-value">March 2026</div>
+                <div class="info-value">Feb 2026</div>
             </div>
         </div>
 
@@ -176,13 +176,17 @@
     </nav>
 
     <script>
-
-    // This now contains the NEWEST entry because of the sorting in Apps Script
+    
+    // 1. LOAD DATA FROM LOGIN
     const latestData = JSON.parse(localStorage.getItem('userData'));
+    const allEntries = JSON.parse(localStorage.getItem('allEntries'));
 
+    // 2. REDIRECT IF NO DATA
     if (!latestData) {
         window.location.href = "index.html";
     } else {
+        // 3. UPDATE THE UI TEXT
+        // We use innerText to replace the "Fredfred" and "$5420.50" demo text
         document.querySelector('.user-name').innerText = latestData.Name || "User";
         document.querySelector('.balance-amount').innerText = "$" + (latestData.Balance || "0.00");
         document.querySelector('.account-num').innerText = latestData.AccountNumber || "N/A";
@@ -192,37 +196,50 @@
             infoValues[2].innerText = latestData.MemberSince || "Unknown";
         }
     }
-    
-    // ... existing functions for Withdraw and Statement ...
 
-
-
-    // Load the data we saved during login 
-    const userData = JSON.parse(localStorage.getItem('userData'));
-
-    if (!userData) {
-        // If someone tries to visit home.html without logging in, send them back
-        window.location.href = "index.html";
-    } else {
-        // Update the UI with real Google Sheet data
-        // Matches the column headers in your Sheet (Name, Balance, etc.)
-        document.querySelector('.user-name').innerText = userData.Name || "User";
-        document.querySelector('.balance-amount').innerText = "$" + (userData.Balance || "0.00");
-        document.querySelector('.account-num').innerText = userData.AccountNumber || "N/A";
-        // Update "Member Since" if you have that column
-        const infoValues = document.querySelectorAll('.info-value');
-        if (infoValues[2]) infoValues[2].innerText = userData.MemberSince || "Unknown";
-    }
+    // 4. WITHDRAW FUNCTION
     function sendWithdrawRequest() {
-    const name = document.querySelector('.user-name').innerText;
-    const balance = document.querySelector('.balance-amount').innerText;
-    const phone = "+256783372449"; 
-    
-    const message = `Hello, I'm ${name}. I want to withdraw ${balance} from my account.`;
-    const encodedMessage = encodeURIComponent(message);
-    
-    window.location.href = `https://wa.me/${phone}?text=${encodedMessage}`;
-}
+        const name = document.querySelector('.user-name').innerText;
+        const balance = document.querySelector('.balance-amount').innerText;
+        const phone = "256XXXXXXXXX"; // <-- PUT YOUR REAL WHATSAPP NUMBER HERE
+        
+        const message = `Hello, I'm ${name}. I want to withdraw ${balance} from my account.`;
+        const encodedMessage = encodeURIComponent(message);
+        
+        window.location.href = `https://wa.me/${phone}?text=${encodedMessage}`;
+    }
+
+    // 5. STATEMENT FUNCTION
+    function showStatement() {
+        const modal = document.getElementById('statementModal');
+        const table = document.getElementById('statementTable');
+        
+        if (!allEntries || allEntries.length === 0) {
+            alert("No transaction history found.");
+            return;
+        }
+
+        // Create Table Headers
+        let tableHTML = `<tr style="background: #222;">`;
+        Object.keys(allEntries[0]).forEach(header => {
+            tableHTML += `<th style="border-bottom:2px solid #FFD700; padding:12px; text-align:left;">${header}</th>`;
+        });
+        tableHTML += `</tr>`;
+        
+        // Create Table Rows
+        allEntries.forEach(row => {
+            tableHTML += `<tr>`;
+            Object.values(row).forEach(val => {
+                tableHTML += `<td style="border-bottom:1px solid #333; padding:12px;">${val}</td>`;
+            });
+            tableHTML += `</tr>`;
+        });
+
+        table.innerHTML = tableHTML;
+        modal.style.display = 'block';
+    }
+</script>
+
 
 <div id="statementModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.9); z-index:1000; overflow-y:auto; padding:20px; box-sizing:border-box;">
     <button onclick="document.getElementById('statementModal').style.display='none'" style="background:#FFD700; border:none; padding:10px; border-radius:5px; margin-bottom:20px;">Close Statement</button>
@@ -230,7 +247,7 @@
         </table>
 </div>
 
-</script>
+
 
 <div id="statementModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.9); z-index:1000; overflow-y:auto; padding:20px; box-sizing:border-box;">
     <button onclick="document.getElementById('statementModal').style.display='none'" style="background:#FFD700; border:none; padding:10px; border-radius:5px; margin-bottom:20px;">Close Statement</button>
