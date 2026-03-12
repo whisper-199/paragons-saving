@@ -130,12 +130,16 @@
 
         <h2 class="section-title">Quick Actions</h2>
         <div class="actions-grid">
-            <div class="action-item">
-                <div class="action-icon-wrapper">➤</div> Withdraw
-            </div>
-            <div class="action-item">
-                <div class="action-icon-wrapper">📋</div> Statement
-            </div>
+            <div class="action-item" onclick="sendWithdrawRequest()" style="cursor: pointer;">
+    <div class="action-icon-wrapper">➤</div>
+    Withdraw
+</div>
+        
+        <div class="action-item" onclick="showStatement()" style="cursor: pointer;">
+    <div class="action-icon-wrapper">📋</div>
+    Statement
+</div>
+
         </div>
 
         <h2 class="section-title" style="margin-top:25px;">Account Information</h2>
@@ -172,7 +176,28 @@
     </nav>
 
     <script>
-    // Load the data we saved during login
+
+    // This now contains the NEWEST entry because of the sorting in Apps Script
+    const latestData = JSON.parse(localStorage.getItem('userData'));
+
+    if (!latestData) {
+        window.location.href = "index.html";
+    } else {
+        document.querySelector('.user-name').innerText = latestData.Name || "User";
+        document.querySelector('.balance-amount').innerText = "$" + (latestData.Balance || "0.00");
+        document.querySelector('.account-num').innerText = latestData.AccountNumber || "N/A";
+        
+        const infoValues = document.querySelectorAll('.info-value');
+        if (infoValues[2]) {
+            infoValues[2].innerText = latestData.MemberSince || "Unknown";
+        }
+    }
+    
+    // ... existing functions for Withdraw and Statement ...
+
+
+
+    // Load the data we saved during login 
     const userData = JSON.parse(localStorage.getItem('userData'));
 
     if (!userData) {
@@ -188,7 +213,30 @@
         const infoValues = document.querySelectorAll('.info-value');
         if (infoValues[2]) infoValues[2].innerText = userData.MemberSince || "Unknown";
     }
+    function sendWithdrawRequest() {
+    const name = document.querySelector('.user-name').innerText;
+    const balance = document.querySelector('.balance-amount').innerText;
+    const phone = "+256783372449"; 
+    
+    const message = `Hello, I'm ${name}. I want to withdraw ${balance} from my account.`;
+    const encodedMessage = encodeURIComponent(message);
+    
+    window.location.href = `https://wa.me/${phone}?text=${encodedMessage}`;
+}
+
+<div id="statementModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.9); z-index:1000; overflow-y:auto; padding:20px; box-sizing:border-box;">
+    <button onclick="document.getElementById('statementModal').style.display='none'" style="background:#FFD700; border:none; padding:10px; border-radius:5px; margin-bottom:20px;">Close Statement</button>
+    <table id="statementTable" style="width:100%; border-collapse: collapse; color:white; font-size:14px;">
+        </table>
+</div>
+
 </script>
+
+<div id="statementModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.9); z-index:1000; overflow-y:auto; padding:20px; box-sizing:border-box;">
+    <button onclick="document.getElementById('statementModal').style.display='none'" style="background:#FFD700; border:none; padding:10px; border-radius:5px; margin-bottom:20px;">Close Statement</button>
+    <table id="statementTable" style="width:100%; border-collapse: collapse; color:white; font-size:14px;">
+        </table>
+</div>
 
 </body>
 </html>

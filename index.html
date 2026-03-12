@@ -130,40 +130,47 @@
     <script>
         const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwwcb1l8PVBeDkJYa51OX4geRgor4WneQYCFaOrGH5U77hfYDuxkM1IfRyp48xmdMFM/exec";
 
-document.getElementById('signInButton').addEventListener('click', function() {
-    const email = document.getElementById('emailInput').value;
+    document.getElementById('signInButton').addEventListener('click', function() {
+    const email = document.getElementById('emailInput').value.trim();
     const btn = this;
 
-    if (!email) return alert("Enter your email");
+    if (!email) return alert("Please enter your email");
 
     btn.innerText = "Verifying...";
     btn.disabled = true;
 
-    fetch(`${SCRIPT_URL}?email=${email}`, {
-    method: 'GET',
-    mode: 'cors', // Add this
-    redirect: 'follow' // Add this to ensure it follows Google's redirect
-})
-
+    fetch(`${SCRIPT_URL}?email=${email}`)
         .then(res => res.json())
         .then(response => {
             if (response.success) {
-                // Save user data to LocalStorage to use on the next page
-                localStorage.setItem('userData', JSON.stringify(response.data));
+                // Save the most recent entry for the Home Page
+                localStorage.setItem('userData', JSON.stringify(response.latest));
+                // Save the full history for the Statement Page
+                localStorage.setItem('allEntries', JSON.stringify(response.allEntries));
+                
                 window.location.href = "home.html";
             } else {
-                alert("Email not found in our records.");
+                alert("Email not found.");
                 btn.innerText = "Sign In";
                 btn.disabled = false;
             }
         })
         .catch(err => {
             console.error(err);
-            alert("Error connecting to server.");
+            alert("Connection error. Check your internet.");
             btn.innerText = "Sign In";
             btn.disabled = false;
         });
 });
+
+
+
+
+    fetch(`${SCRIPT_URL}?email=${email}`, {
+    method: 'GET',
+    mode: 'cors', // Add this
+    redirect: 'follow' // Add this to ensure it follows Google's redirect
+})
 
     </script>
 
