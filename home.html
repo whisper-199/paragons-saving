@@ -11,7 +11,7 @@
             color: white;
             font-family: Arial, sans-serif;
             margin: 0;
-            padding-bottom: 70px; /* Space for fixed bottom nav */
+            padding-bottom: 100px; /* Space for fixed bottom nav */
         }
 
         .container {
@@ -42,10 +42,15 @@
 
         /* Card styles used for all section blocks */
         .card {
-            background-color: #1E1E1E; /* Lighter dark */
+            color: black;
             border-radius: 16px;
             padding: 20px;
             margin-bottom: 25px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
         }
 
         /* Total Balance Card (First main block) */
@@ -98,6 +103,57 @@
             padding: 15px 0;
             border-top: 1px solid #333;
         }
+
+/* Container to center the floating bar */
+.nav-wrapper {
+    position: fixed;
+    bottom: 20px;
+    left: 0;
+    right: 0;
+    display: flex;
+    justify-content: center;
+    z-index: 1000;
+}
+
+.pill-nav {
+    display: flex;
+    background: rgba(25, 25, 25, 0.9); /* Dark background */
+    backdrop-filter: blur(10px); /* Blurs content behind the bar */
+    padding: 10px 20px;
+    border-radius: 50px; /* Makes it a pill shape */
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    width: 90%;
+    max-width: 400px;
+    justify-content: space-around;
+    align-items: center;
+}
+
+.nav-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    color: #888;
+    text-decoration: none;
+    font-size: 12px;
+    transition: 0.3s;
+    cursor: pointer;
+}
+
+.nav-item.active {
+    color: #FFD700; /* Gold for the active tab */
+}
+
+.nav-icon {
+    font-size: 20px;
+    margin-bottom: 4px;
+}
+
+.nav-item span {
+    font-weight: 500;
+}
+
+
         .nav-item { text-align: center; color: #888; font-size: 12px; flex: 1; }
         .nav-item-active { color: #FFD700; }
         .nav-icon { font-size: 24px; margin-bottom: 5px; }
@@ -181,7 +237,9 @@
 </div>
 
 
-    </div>
+ <!--  
+
+</div>
 
     <nav class="bottom-nav">
         <div class="nav-item nav-item-active">
@@ -196,6 +254,27 @@
     <div class="nav-icon">👤</div>
     Log Out
 </div>
+
+
+-->
+
+<div class="nav-wrapper">
+    <nav class="pill-nav">
+        <div class="nav-item active" onclick="location.reload()">
+            <div class="nav-icon">🏠</div>
+            <span>Home</span>
+        </div>
+        <div class="nav-item" onclick="showStatement()">
+            <div class="nav-icon">📋</div>
+            <span>Statement</span>
+        </div>
+        <div class="nav-item" onclick="logOut()">
+            <div class="nav-icon">👤</div>
+            <span>Logout</span>
+        </div>
+    </nav>
+</div>
+
 
         </div>
     </nav>
