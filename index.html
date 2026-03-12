@@ -128,7 +128,7 @@
     </div>
 
     <script>
-        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwwcb1l8PVBeDkJYa51OX4geRgor4WneQYCFaOrGH5U77hfYDuxkM1IfRyp48xmdMFM/exec ";
+        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwwcb1l8PVBeDkJYa51OX4geRgor4WneQYCFaOrGH5U77hfYDuxkM1IfRyp48xmdMFM/exec";
 
 document.getElementById('signInButton').addEventListener('click', function() {
     const email = document.getElementById('emailInput').value;
@@ -139,7 +139,12 @@ document.getElementById('signInButton').addEventListener('click', function() {
     btn.innerText = "Verifying...";
     btn.disabled = true;
 
-    fetch(`${SCRIPT_URL}?email=${email}`)
+    fetch(`${SCRIPT_URL}?email=${email}`, {
+    method: 'GET',
+    mode: 'cors', // Add this
+    redirect: 'follow' // Add this to ensure it follows Google's redirect
+})
+
         .then(res => res.json())
         .then(response => {
             if (response.success) {
