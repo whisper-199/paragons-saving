@@ -188,11 +188,11 @@
                 <div class="welcome-tag">Welcome back,</div>
                 <h1 class="user-name">Fredfred</h1>
             </div>
-            <div class="container" style="margin-top: 20px;">
-    <button onclick="document.getElementById('passwordModal').style.display='block'" 
-            style="width: 100%; padding: 12px; background: #333; color: #FFD700; border: 1px solid #FFD700; border-radius: 12px; font-weight: bold; cursor: pointer;">
-        🔐
-    </button>
+          <div id="passwordModal">
+    <div class="modal-content">
+        <button onclick="updatePassword()">Save Password</button>
+        <button onclick="closePasswordModal()" style="color: red; background: none; border: none; margin-top: 10px; cursor: pointer;">Cancel</button>
+    </div>
 </div>
 
         </header>
@@ -377,30 +377,52 @@ function logOut() {
     }
 }
 
+// Function to close the modal
+function closePasswordModal() {
+    document.getElementById('passwordModal').style.display = 'none';
+}
+
 function updatePassword() {
-    const newPassword = document.getElementById('newPassInput').value;
+    const newPassword = document.getElementById('newPassInput').value.trim();
     const userData = JSON.parse(localStorage.getItem('userData'));
+    
+    // We target the specific button to show loading status
+    const btn = event.target;
 
-    if (!newPassword) return alert("Please enter a password");
+    if (!newPassword || newPassword.length < 4) {
+        return alert("Please enter at least 4 characters.");
+    }
 
+    btn.innerText = "Updating...";
+    btn.disabled = true;
+
+    // We use 'no-cors' because Google Scripts don't play nice with standard JSON POSTs
     fetch(SCRIPT_URL, {
         method: 'POST',
+        mode: 'no-cors', 
+        headers: {
+            'Content-Type': 'application/json'
+        },
         body: JSON.stringify({
-            email: userData.EMAIL || userData.Email, // Matches your sheet header
+            email: userData.EMAIL || userData.Email,
             newPassword: newPassword
         })
     })
-    .then(res => res.json())
-    .then(response => {
-        if (response.success) {
-            alert("Password updated successfully!");
-            document.getElementById('passwordModal').style.display = 'none';
-        } else {
-            alert("Error: " + response.message);
-        }
+    .then(() => {
+        // Since no-cors doesn't let us read the result, we assume success 
+        // if the request actually goes through.
+        alert("Password updated! Please log in again.");
+        localStorage.clear();
+        window.location.href = "index.html";
     })
-    .catch(err => console.error("Update failed:", err));
+    .catch(err => {
+        console.error(err);
+        alert("Network error. Try again.");
+        btn.innerText = "Save Password";
+        btn.disabled = false;
+    });
 }
+
 
 
 </script>
@@ -421,7 +443,7 @@ function updatePassword() {
         </table>
 </div>
 
-<div id="passwordModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.95); z-index:2000; display: flex; align-items: center; justify-content: center;">
+<div id="passwordModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.95); z-index:2000; align-items: center; justify-content: center;">
     <div style="background: #1e1e1e; width: 90%; max-width: 400px; padding: 30px; border-radius: 20px; border: 1px solid #333; position: relative; margin: auto; top: 20%;">
         <h2 style="color:white; margin-top: 0;">Update Password</h2>
         <p style="color: #888; font-size: 14px;">Keep it simple so you don't forget it!</p>
